@@ -4,7 +4,6 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import logout, authenticate, login
 from .. import serializers as user_serializer
-from .. import models as user_model
 
 
 class RegisterView(APIView):
@@ -29,6 +28,7 @@ class RegisterView(APIView):
 
         response.set_cookie("refresh_token", refresh_token, httponly=True)
         response.set_cookie("access_token", access_token, httponly=True)
+        request.session['user'] = user.id
 
         return response
 
@@ -59,6 +59,7 @@ class LoginView(APIView):
 
             response.set_cookie("refresh_token", refresh_token, httponly=True)
             response.set_cookie("access_token", access_token, httponly=True)
+            request.session['user'] = user.id
             login(request, user)
             return response
 
@@ -66,7 +67,7 @@ class LoginView(APIView):
         except:
             return Response({'success': False,
                              'msg': '서버 장애 발생'},
-                            status=status.HTTP_400_BAD_REQUEST)
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class LogoutView(APIView):
@@ -78,4 +79,5 @@ class LogoutView(APIView):
                             status=status.HTTP_200_OK)
         response.delete_cookie("refresh_token")
         response.delete_cookie("access_token")
+
         return response
