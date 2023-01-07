@@ -9,13 +9,9 @@ from .. import models as user_model
 
 class RegisterView(APIView):
     def post(self, request):
-
-        email = request.data['email']
-
-        if user_model.PayHereUser.objects.filter(email=email).exists():
-            return Response({'success': False, 'msg': '이미 등록된 이메일 입니다.'}, status=status.HTTP_200_OK)
         if request.data['password'] != request.data['password_check']:
             return Response({'success': False, 'msg': '비밀번호가 일치하지 않습니다.'}, status=status.HTTP_200_OK)
+
         serializer = user_serializer.PayHereUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
@@ -75,7 +71,7 @@ class LoginView(APIView):
 
 class LogoutView(APIView):
 
-    def get(self, request):
+    def post(self, request):
         logout(request)
         response = Response({"result": "sucess",
                              "msg": '로그아웃 완료'},
