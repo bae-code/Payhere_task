@@ -4,7 +4,7 @@
 
 ----
 
-![erd](erd.png)
+![erd](ERD.png)
 
 ----
 ### start.sh
