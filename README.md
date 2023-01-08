@@ -184,8 +184,10 @@ python manage.py runserver
 ### 가계부 공유 url 생성
 1. django-link-shortener를 사용
 2. 공유 하려는 상세 페이지 short-url 생성
-3. LIFESPAN을 60초로 설정하여 short-url 만료 시간을 설정
+3. LIFESPAN을 60초로 설정하여 short-url 만료 시간을 설정 (만료시간 변경 가능)
 
 ### 가계부 통계
 1. 가계부 관리에 필요한 기능이라 생각하여 설계
-2. 유저의 타입별 소비금액, 전체 소비금액 , 타입별 비중 %를 보내
+2. 유저의 타입별 소비금액, 전체 소비금액 , 타입별 비중 %를 보내줌
+
+---
