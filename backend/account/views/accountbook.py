@@ -3,6 +3,7 @@ from ..serializers import *
 from ..models import *
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from ..permissions import IsAccountOwner
 from rest_framework.views import APIView
 from shortener import shortener
 
@@ -23,6 +24,7 @@ class AccountBookListView(generics.ListAPIView):
 
 class AccountBookRegisterView(generics.CreateAPIView):
     serializer_class = AccountBookDetailSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -31,8 +33,7 @@ class AccountBookRegisterView(generics.CreateAPIView):
 class AccountBookDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = AccountBook.objects
     serializer_class = AccountBookDetailSerializer
-
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAccountOwner]
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -41,6 +42,7 @@ class AccountBookDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class AccountBookCloneView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         pk = kwargs.get('pk')
@@ -59,6 +61,7 @@ class AccountBookCloneView(APIView):
 
 
 class AccountBookShareView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         pk = kwargs.get('pk')
@@ -68,4 +71,17 @@ class AccountBookShareView(APIView):
 
         return Response({'success': True,
                          'short_url': short_url + data},
+                        status=status.HTTP_200_OK)
+
+
+class AccountBookStatView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        account_book_qs = AccountBook.objects.filter(user=user)
+        result = AccountBook.get_use_amount_stat(account_book_qs)
+
+        return Response({'susccess': True,
+                         'stat': result},
                         status=status.HTTP_200_OK)
