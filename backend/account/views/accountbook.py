@@ -19,7 +19,7 @@ class AccountBookListView(generics.ListAPIView):
 
     def get_queryset(self):
         user_id = self.request.user
-        return AccountBook.objects.filter(user=user_id)
+        return AccountBook.objects.filter(user=user_id, is_archived=False)
 
 
 class AccountBookRegisterView(generics.CreateAPIView):
@@ -31,7 +31,7 @@ class AccountBookRegisterView(generics.CreateAPIView):
 
 
 class AccountBookDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = AccountBook.objects
+    queryset = AccountBook.objects.filter(is_archived=False)
     serializer_class = AccountBookDetailSerializer
     permission_classes = [IsAccountOwner]
 
@@ -40,6 +40,10 @@ class AccountBookDetailView(generics.RetrieveUpdateDestroyAPIView):
         self.perform_destroy(instance)
         return Response(status=status.HTTP_200_OK)
 
+    def perform_destroy(self, instance):
+        instance.is_archived = True
+        instance.save()
+
 
 class AccountBookCloneView(APIView):
     permission_classes = [IsAuthenticated]
@@ -47,7 +51,7 @@ class AccountBookCloneView(APIView):
     def post(self, request, *args, **kwargs):
         pk = kwargs.get('pk')
         try:
-            account_book = AccountBook.objects.get(pk=pk)
+            account_book = AccountBook.objects.get(pk=pk, is_archived=False)
             account_book.pk = None
             account_book._state.adding = True
             account_book.save()
@@ -56,8 +60,8 @@ class AccountBookCloneView(APIView):
                             status=status.HTTP_200_OK)
         except:
             return Response({'success': False,
-                             'msg': '서버 장애 발생'},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                             'msg': '잘못된 요청입니다.'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class AccountBookShareView(APIView):
@@ -65,13 +69,18 @@ class AccountBookShareView(APIView):
 
     def post(self, request, *args, **kwargs):
         pk = kwargs.get('pk')
-        short_url = 'http://127.0.0.1:8000/s/'
-        path = f'/account/account-book/{pk}'
-        data = shortener.create(request.user, path)
+        if AccountBook.objects.filter(pk=pk, is_archived=False) is None:
+            short_url = 'http://127.0.0.1:8000/s/'
+            path = f'/account/account-book/{pk}'
+            data = shortener.create(request.user, path)
 
-        return Response({'success': True,
-                         'short_url': short_url + data},
-                        status=status.HTTP_200_OK)
+            return Response({'success': True,
+                             'short_url': short_url + data},
+                            status=status.HTTP_200_OK)
+        else:
+            return Response({'success': False,
+                             'msg': '잘못된 요청입니다.'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class AccountBookStatView(APIView):
@@ -79,7 +88,7 @@ class AccountBookStatView(APIView):
 
     def get(self, request):
         user = request.user
-        account_book_qs = AccountBook.objects.filter(user=user)
+        account_book_qs = AccountBook.objects.filter(user=user, is_archived=False)
         result = AccountBook.get_use_amount_stat(account_book_qs)
 
         return Response({'susccess': True,
