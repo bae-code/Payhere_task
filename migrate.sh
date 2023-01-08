@@ -1,3 +1,4 @@
+cd backend
 echo "=========makemigrations========="
 python manage.py makemigrations
 echo "=========finish makemigrations========="
