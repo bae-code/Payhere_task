@@ -7,4 +7,5 @@ urlpatterns = [
     path('account-book/register', AccountBookRegisterView.as_view(), name='account-book-create'),
     path('account-book/clone/<int:pk>', AccountBookCloneView.as_view(), name='account-book-clone'),
     path('account-book/share/<int:pk>', AccountBookShareView.as_view(), name='account-book-share'),
+    path('account-book/stat', AccountBookStatView.as_view(), name='account-book-stat'),
 ]

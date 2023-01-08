@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 from ..models import *
 
 
@@ -18,7 +17,6 @@ class AccountBookSerializer(serializers.ModelSerializer):
 
 
 class AccountBookDetailSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = AccountBook
         fields = '__all__'

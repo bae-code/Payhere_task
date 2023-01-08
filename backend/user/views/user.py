@@ -59,7 +59,6 @@ class LoginView(APIView):
 
             response.set_cookie("refresh_token", refresh_token, httponly=True)
             response.set_cookie("access_token", access_token, httponly=True)
-            request.session['user'] = user.id
             login(request, user)
             return response
 
