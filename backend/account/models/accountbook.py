@@ -22,6 +22,7 @@ class AccountBook(models.Model):
                             null=True,
                             blank=True)
 
+    is_archived = models.BooleanField(default= False)
     date_added = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
