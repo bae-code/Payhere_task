@@ -13,6 +13,9 @@ class AccountBookPagination(pagination.PageNumberPagination):
 
 
 class AccountBookListView(generics.ListAPIView):
+    """
+    유저 가계부 전체 리스트
+    """
     serializer_class = AccountBookDetailSerializer
     pagination_class = AccountBookPagination
     permission_classes = [IsAuthenticated]
@@ -31,6 +34,10 @@ class AccountBookRegisterView(generics.CreateAPIView):
 
 
 class AccountBookDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    가계부 상세 페이지,
+    가계부 수정/삭제
+    """
     queryset = AccountBook.objects.filter(is_archived=False)
     serializer_class = AccountBookDetailSerializer
     serializer_classes = {
@@ -58,6 +65,9 @@ class AccountBookDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class AccountBookCloneView(APIView):
+    """
+    가계부 복제
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
@@ -78,6 +88,9 @@ class AccountBookCloneView(APIView):
 
 
 class AccountBookShareView(APIView):
+    """
+    가계부 공유 Short URL 생성
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
@@ -98,6 +111,10 @@ class AccountBookShareView(APIView):
 
 
 class AccountBookStatView(APIView):
+    """
+    유저 가계부 통계 
+    { 전체 사용 금액, 타입별 사용 금액 , 타입별 사용 비율 } 
+    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request):

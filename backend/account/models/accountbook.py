@@ -27,6 +27,9 @@ class AccountBook(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
 
     def get_use_amount_stat(self):
+        """
+        유저 가계부 사용 통계 Queryset
+        """
         total_amount = self.aggregate(
             Sum('use_amount')
         )['use_amount__sum']

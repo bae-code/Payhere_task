@@ -1,5 +1,6 @@
 cd backend
 echo "===========requirements.txt install start==========="
+pip install --upgrade pip
 pip install -r requirements.txt
 echo "===========requirements.txt install finish==========="
 
