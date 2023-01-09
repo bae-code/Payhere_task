@@ -10,6 +10,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class RegisterView(APIView):
+    """
+    회원가입
+    """
     @swagger_auto_schema(request_body=user_serializer.PayHereUserRegisterSerializer)
     def post(self, request):
         serializer = user_serializer.PayHereUserRegisterSerializer(data=request.data)
@@ -34,6 +37,9 @@ class RegisterView(APIView):
 
 
 class LoginView(APIView):
+    """
+    로그인
+    """
 
     @swagger_auto_schema(request_body=user_serializer.PayHereUserLoginSerializer)
     def post(self, request):
@@ -72,6 +78,9 @@ class LoginView(APIView):
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
+    """
+    로그아웃
+    """
 
     def post(self, request):
         response = Response({"result": "sucess",
