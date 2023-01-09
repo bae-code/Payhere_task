@@ -43,7 +43,6 @@ class AccountBookDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_serializer_class(self):
         if hasattr(self, 'serializer_classes'):
-            print(self.request.method)
             return self.serializer_classes.get(self.request.method, self.serializer_class)
 
         return super().get_serializer_class()
