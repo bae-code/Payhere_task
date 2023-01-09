@@ -13,17 +13,17 @@ class AccountBookPagination(pagination.PageNumberPagination):
 
 
 class AccountBookListView(generics.ListAPIView):
-    serializer_class = AccountBookSerializer
+    serializer_class = AccountBookDetailSerializer
     pagination_class = AccountBookPagination
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user_id = self.request.user
+        user_id = self.request.user.id
         return AccountBook.objects.filter(user=user_id, is_archived=False)
 
 
 class AccountBookRegisterView(generics.CreateAPIView):
-    serializer_class = AccountBookDetailSerializer
+    serializer_class = AccountBookSerializer
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
@@ -33,7 +33,19 @@ class AccountBookRegisterView(generics.CreateAPIView):
 class AccountBookDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = AccountBook.objects.filter(is_archived=False)
     serializer_class = AccountBookDetailSerializer
+    serializer_classes = {
+        'GET': AccountBookDetailSerializer,
+        'PUT': AccountBookSerializer,
+        'PATCH': AccountBookSerializer,
+        'DELETE': AccountBookDetailSerializer
+    }
     permission_classes = [IsAccountOwner]
+
+    def get_serializer_class(self):
+        if hasattr(self, 'serializer_classes'):
+            return self.serializer_classes.get(self.request.method, self.serializer_class)
+
+        return super().get_serializer_class()
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -50,6 +62,7 @@ class AccountBookCloneView(APIView):
 
     def post(self, request, *args, **kwargs):
         pk = kwargs.get('pk')
+
         try:
             account_book = AccountBook.objects.get(pk=pk, is_archived=False)
             account_book.pk = None
@@ -68,8 +81,9 @@ class AccountBookShareView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
+
         pk = kwargs.get('pk')
-        if AccountBook.objects.filter(pk=pk, is_archived=False) is None:
+        if AccountBook.objects.filter(pk=pk, is_archived=False) is not None:
             short_url = 'http://127.0.0.1:8000/s/'
             path = f'/account/account-book/{pk}'
             data = shortener.create(request.user, path)

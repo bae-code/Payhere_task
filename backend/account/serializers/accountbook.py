@@ -9,14 +9,14 @@ class AccountBookTypeSerializer(serializers.ModelSerializer):
 
 
 class AccountBookSerializer(serializers.ModelSerializer):
-    type = AccountBookTypeSerializer()
-
     class Meta:
         model = AccountBook
-        fields = '__all__'
+        fields = ['type', 'use_amount', 'memo']
 
 
 class AccountBookDetailSerializer(serializers.ModelSerializer):
+    type = AccountBookTypeSerializer()
+
     class Meta:
         model = AccountBook
         fields = '__all__'

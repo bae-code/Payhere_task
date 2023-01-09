@@ -6,7 +6,7 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-schema_url_patterns = [path('users', include('user.urls')), path('', include('account.urls'))]
+schema_url_patterns = [path('user', include('user.urls')), path('', include('account.urls'))]
 
 schema_view_v1 = get_schema_view(
     openapi.Info(
@@ -24,7 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^user/', include('user.urls')),
     re_path(r'^account/', include('account.urls')),
-    path('api_auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('s/', include('shortener.urls')),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view_v1.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^swagger$', schema_view_v1.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

@@ -29,6 +29,9 @@ python manage.py runserver
 
 ## Swaager path : /swagger
 
+Authorize
+Bearer {access_token}
+
 
 ----
 <table style="border-collapse: collapse; width: 100%; height: 210px;" border="1" data-ke-align="alignLeft" data-ke-style="style12">
@@ -104,28 +107,18 @@ python manage.py runserver
 
 ---
 ### 회원가입
-1. 유저는 name, email, password, password_check, phone 을 입력하여 회원가입 요청
+1. 유저는 name, email, password, phone 을 입력하여 회원가입 요청
 
     ~~~
     {
         "email":"test@payhere.kr",
         "name":"test",
         "password":"1234",
-        "password_check":"1234",
         "phone":"01000000000"
     }
     ~~~
 
-   1. password 와 password_check 가 다를 때
-      ~~~
-      HTTP 200 OK
-       {
-           "success":false,
-           "msg": "비밀번호가 일치하지 않습니다."
-       }
-      ~~~
-
-   2.  이미 존재 하는 Email 일때
+   1.  이미 존재 하는 Email 일때
 
       ~~~
       HTTP 400 Bad Request
