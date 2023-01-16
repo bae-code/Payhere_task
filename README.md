@@ -89,7 +89,7 @@ Bearer {access_token}
 </tr>
 <tr style="height: 17px;">
 <td style="width: 25%; height: 17px;">가계부 공유 URL 생성</td>
-<td style="width: 25%; height: 17px;">GET</td>
+<td style="width: 25%; height: 17px;">POST</td>
 <td style="width: 25%; height: 17px;">/account-book/share/{pk}</td>
 </tr>
 <tr style="height: 19px;">
