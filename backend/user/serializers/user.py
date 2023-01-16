@@ -30,3 +30,9 @@ class PayHereUserLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = PayHereUser
         fields = ['email', 'password']
+
+    def validate_email(self, email):
+        if PayHereUser.objects.filter(email=email).exists() is False:
+            raise ValidationError('이메일을 확인해주세요')
+        return email
+
