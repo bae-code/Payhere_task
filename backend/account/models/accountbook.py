@@ -1,6 +1,7 @@
 from django.db import models
 from django.apps import apps
 from django.db.models import Sum, F, Count
+from ..choices import *
 
 
 class AccountBookType(models.Model):
@@ -16,6 +17,7 @@ class AccountBook(models.Model):
                              db_column='type_id',
                              related_name='accountbook',
                              on_delete=models.SET_DEFAULT,
+                             choices=ACCOUNT_BOOK_TYPE_CHOICES,
                              default=1)
     use_amount = models.IntegerField()
     memo = models.CharField(max_length=255,
