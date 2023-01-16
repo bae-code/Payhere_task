@@ -79,7 +79,7 @@ Bearer {access_token}
 </tr>
 <tr style="height: 17px;">
 <td style="width: 25%; height: 17px;"><b>가계부 디테일</b></td>
-<td style="width: 25%; height: 17px;">PUT</td>
+<td style="width: 25%; height: 17px;">GET</td>
 <td style="width: 25%; height: 17px;">/account-book/{pk}</td>
 </tr>
 <tr style="height: 17px;">
