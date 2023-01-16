@@ -13,6 +13,7 @@ class RegisterView(APIView):
     """
     회원가입
     """
+
     @swagger_auto_schema(request_body=user_serializer.PayHereUserRegisterSerializer)
     def post(self, request):
         serializer = user_serializer.PayHereUserRegisterSerializer(data=request.data)
@@ -45,19 +46,20 @@ class LoginView(APIView):
     def post(self, request):
         email = request.data['email']
         try:
-            user = user_model.PayHereUser.objects.filter(email=email).exists()
-            if user is False:
+            user_data = user_serializer.PayHereUserLoginSerializer(data=request.data)
+            user_data.is_valid(raise_exception=True)
+            user = user_model.PayHereUser.objects.get(email=email)
+
+            if user.check_password(request.data['password']) is False:
                 return Response({'success': False,
-                                 'msg': 'Email / 비밀번호가 일치하지 않습니다.'},
+                                 'msg': '비밀번호가 일치하지 않습니다.'},
                                 status=status.HTTP_400_BAD_REQUEST)
 
-            user = user_model.PayHereUser.objects.get(email=email)
-            user_data = user_serializer.PayHereUserSerializer(user)
             token = RefreshToken.for_user(user=user)
             refresh_token = str(token)
             access_token = str(token.access_token)
             response = Response({'success': True,
-                                 'user': user_data.data,
+                                 'user': user_data.validated_data,
                                  'msg': '로그인 완료',
                                  'jwt_token': {
                                      'refresh_token': refresh_token,
@@ -71,6 +73,7 @@ class LoginView(APIView):
             return response
 
         except:
+
             return Response({'success': False,
                              'msg': '서버 장애 발생'},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
