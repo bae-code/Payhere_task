@@ -18,7 +18,7 @@ class AccountBook(models.Model):
                              related_name='accountbook',
                              on_delete=models.SET_DEFAULT,
                              choices=ACCOUNT_BOOK_TYPE_CHOICES,
-                             default=1)
+                             default=NON_TYPE)
     use_amount = models.IntegerField()
     memo = models.CharField(max_length=255,
                             null=True,
