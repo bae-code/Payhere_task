@@ -38,10 +38,10 @@ class AccountBook(models.Model):
             type_name=F('type__name')
         ).values('type_name', 'type_qty', 'sum_value')
 
-        total_stat = type_stats.aggregate(Sum('type_qty'), Sum('use_amount'))
+        total_stat = type_stats.aggregate(Sum('type_qty'), Sum('sum_value'))
 
         stat = {
-            'total_amount': total_stat['use_amount__sum'],
+            'total_amount': total_stat['sum_value__sum'],
             'type_amount': {},
             'type_percent': {}
         }
