@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from ..permissions import IsAccountOwner
 from rest_framework.views import APIView
 from shortener import shortener
+from django.apps import apps
 
 
 class AccountBookPagination(pagination.PageNumberPagination):
@@ -39,7 +40,6 @@ class AccountBookDetailView(generics.RetrieveUpdateDestroyAPIView):
     가계부 수정/삭제
     """
     queryset = AccountBook.objects.filter(is_archived=False)
-    serializer_class = AccountBookDetailSerializer
     serializer_classes = {
         'GET': AccountBookDetailSerializer,
         'PUT': AccountBookSerializer,
@@ -100,6 +100,13 @@ class AccountBookShareView(APIView):
             short_url = 'http://127.0.0.1:8000/s/'
             path = f'/account/account-book/{pk}'
             data = shortener.create(request.user, path)
+
+            if apps.get_model('shortner.UrlMap').objects.filter(short_url=data).exists():
+                """
+                Shortner 라이브러리 자체 유니크 로직 실행
+                예외 중복 상황 체크 
+                """
+                data = shortener.create(request.user, path)
 
             return Response({'success': True,
                              'short_url': short_url + data},
